@@ -45,7 +45,7 @@ class Dataset:
 
     def __item__(self, index: int) -> ImageArray:
         """Get an image from the dataset."""
-        return read_image(self.df.iloc[index])
+        return read_image(self.df.iloc[index]["path"])
 
     def __getitem__(self, index: int) -> ImageArray:
         """Get an image from the dataset."""

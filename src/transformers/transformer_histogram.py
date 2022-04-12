@@ -4,6 +4,7 @@ import json
 import cv2
 import numpy as np
 
+from src import config
 from src.base.base_transformer import Transformer
 from src.base.image_array import ImageArray
 
@@ -19,7 +20,7 @@ class HistogramEqualizationTransformer(Transformer):
 class HistogramMatchingTransformer(Transformer):
     """Matches an images histogram with a given one"""
 
-    def __init__(self, histogram_path: str = "reversed_histo.json"):
+    def __init__(self, histogram_path: str = config.REVERSED_HISTOGRAM_JSON):
         """Initialize the histogram matching transformer"""
         with open(histogram_path, "r", encoding="utf-8") as file:
             self.reverse_hists = json.load(file)
@@ -47,6 +48,7 @@ class HistogramMatchingTransformer(Transformer):
         final_img = np.zeros(hsv.shape)
         # final_img[:,:,0] = cv2.LUT(hsv[:,:,0], final_hists["hue"])
         final_img[:, :, 0] = hsv[:, :, 0]
+        print(hsv.dtype)
         final_img[:, :, 1] = cv2.LUT(hsv[:, :, 1], final_hists["saturation"])
         final_img[:, :, 2] = cv2.LUT(hsv[:, :, 2], final_hists["value"])
         return cv2.cvtColor(final_img.astype(np.uint8), cv2.COLOR_HSV2RGB)

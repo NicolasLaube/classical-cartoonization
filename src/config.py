@@ -3,18 +3,22 @@
 
 DATASETS_CSV_PATH = {
     "train": {
-        "cartoons": "data/train_cartoons.csv",
-        "landscapes": "data/train_landscapes.csv",
-        "flickr": "data/train_flickr.csv",
+        "cartoons": "../../DeepL/cartoongan/data/cartoons_train.csv",
+        "landscapes": "../../DeepL/cartoongan/data/landscapes_train.csv",
+        "flickr": "../../DeepL/cartoongan/data/pictures_train.csv",
     },
     "validation": {
-        "cartoons": "data/validation_cartoons.csv",
-        "landscapes": "data/validation_landscapes.csv",
-        "flickr": "data/validation_flickr.csv",
+        "cartoons": "../../DeepL/cartoongan/data/cartoons_validation.csv",
+        "landscapes": "../../DeepL/cartoongan/data/landscapes_validation.csv",
+        "flickr": "../../DeepL/cartoongan/data/pictures_validation.csv",
     },
     "test": {
-        "cartoons": "data/test_cartoons.csv",
-        "landscapes": "data/test_landscapes.csv",
-        "flickr": "data/test_flickr.csv",
+        "cartoons": "../../DeepL/cartoongan/data/cartoons_test.csv",
+        "landscapes": "../../DeepL/cartoongan/data/landscapes_test.csv",
+        "flickr": "../../DeepL/cartoongan/data/pictures_test.csv",
     },
 }
+
+REVERSED_HISTOGRAM_JSON = "data/histo_values.json"
+
+BASE_DATA_PATH = "../../DeepL/cartoongan/"

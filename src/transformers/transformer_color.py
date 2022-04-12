@@ -67,6 +67,6 @@ class BinsQuantizationTransformer(Transformer):
         """Initialize the color quantization transformer"""
         self.bins = 256 // n_colors
 
-    def transform(self, input_img: ImageArray) -> ImageArray:
+    def __call__(self, input_img: ImageArray) -> ImageArray:
         """Applies transform to an image"""
         return input_img // self.bins * self.bins + 128 // self.bins

@@ -13,7 +13,7 @@ def format_image(
     image: ImageArray, to_format
 ) -> Tuple[ImageArray, Optional[NDArray[(Any, Any), np.uint8]]]:
     """To format a nD image into a mD one"""
-    if to_format == ImageArray.BLACK_AND_WHITE:
+    if to_format == ImageFormat.BLACK_AND_WHITE:
         if image.ndim == 2:
             return (image, None)
         if image.ndim == 3 and image.shape[-1] == 2:
