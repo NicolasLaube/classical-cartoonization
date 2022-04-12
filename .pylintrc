@@ -1,0 +1,8 @@
+[MASTER]
+disable=too-few-public-methods,duplicate-code,missing-module-docstring,E0401,E1101,R0903,too-many-arguments
+# Good variable names which should always be accepted, separated by a comma
+good-names=i,j,k,X_train,y_train,X_test,y_test,X_val,y_val,id,X,y,x,db,df,ax
+max-args=6
+max-locals=17
+generated-members=torch.*,pd.*
+extension-pkg-whitelist=lxml
