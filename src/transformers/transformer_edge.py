@@ -5,7 +5,7 @@ from src.base.base_transformer import Transformer
 from src.base.image_array import ImageArray
 
 
-class CannyEdgeTransformer(Transformer):
+class TransformerCannyEdge(Transformer):
     """Apply canny edge detection"""
 
     def __init__(self, th_min: int = 30, th_max: int = 150):

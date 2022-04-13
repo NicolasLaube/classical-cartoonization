@@ -17,7 +17,7 @@ class HistogramEqualizationTransformer(Transformer):
         return cv2.equalizeHist(input_img)
 
 
-class HistogramMatchingTransformer(Transformer):
+class TransformerHistogramMatching(Transformer):
     """Matches an images histogram with a given one"""
 
     def __init__(self, histogram_path: str = config.REVERSED_HISTOGRAM_JSON):

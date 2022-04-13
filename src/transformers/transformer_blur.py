@@ -7,7 +7,7 @@ from src.base.base_transformer import Transformer
 from src.base.image_array import ImageArray
 
 
-class GaussianBlurTransformer(Transformer):
+class TransformerGaussianBlur(Transformer):
     """Apply gaussian blur to transformer"""
 
     def __init__(self, kernel: Tuple[int, int] = (5, 5), stdev: int = 0):
@@ -20,7 +20,7 @@ class GaussianBlurTransformer(Transformer):
         return cv2.GaussianBlur(input_img, self.kernel, self.stdev)
 
 
-class MedianBlurTransformer(Transformer):
+class TransformerMedianBlur(Transformer):
     """Apply median blur to transformer"""
 
     def __init__(self, ksize: int = 5):
@@ -32,7 +32,7 @@ class MedianBlurTransformer(Transformer):
         return cv2.medianBlur(input_img, self.ksize)
 
 
-class BilateralBlurTransformer(Transformer):
+class TransformerBilateralBlur(Transformer):
     """Apply bilateral blur to transformer"""
 
     def __init__(

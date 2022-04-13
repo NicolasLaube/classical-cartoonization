@@ -6,7 +6,7 @@ from src.base.base_transformer import Transformer
 from src.base.image_array import ImageArray
 
 
-class ContourTransformer(Transformer):
+class TransformerContour(Transformer):
     """Draw contours of an image"""
 
     def __init__(
@@ -47,7 +47,7 @@ class ContourTransformer(Transformer):
         return image_with_mask
 
 
-class AdaptiveThresholdContour(Transformer):
+class TransformerAdaptiveThresholdContour(Transformer):
     """Draw contours thanks to adaptive threshold"""
 
     def __init__(self, line_size: int = 3, blur_value: int = 3):

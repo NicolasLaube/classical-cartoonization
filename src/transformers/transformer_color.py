@@ -9,7 +9,7 @@ from src.base.image_array import ImageArray, ImageFormat
 from src.dataset.formatter import format_image
 
 
-class HSVAffineTransformer(Transformer):
+class TransformerHSVAffine(Transformer):
     """Affine hsv transformation"""
 
     def __init__(
@@ -38,7 +38,7 @@ class HSVAffineTransformer(Transformer):
         return cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
 
 
-class SpecificColorTransformer(Transformer):
+class TransformerSpecificColor(Transformer):
     """Modifines specicied colors."""
 
     def __init__(self, color_params: List[Tuple[List[int], float, float]]):
@@ -46,7 +46,7 @@ class SpecificColorTransformer(Transformer):
         self.color_params = color_params
 
 
-class ColorTransformer(Transformer):
+class TransformerColor(Transformer):
     """To transform an image of a certain type to another"""
 
     def __init__(self, to_format: ImageFormat, return_mask: bool = False):
@@ -60,7 +60,7 @@ class ColorTransformer(Transformer):
         return format_image(input_img, self.to_format)[idx]
 
 
-class BinsQuantizationTransformer(Transformer):
+class TransformerBinsQuantization(Transformer):
     """Quantize an image to a certain number of colors using bins"""
 
     def __init__(self, n_colors: int):

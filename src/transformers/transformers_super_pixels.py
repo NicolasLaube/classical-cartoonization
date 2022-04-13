@@ -17,7 +17,7 @@ class SuperPixelMode(Enum):
     WATERSHED = "watershed"
 
 
-class SuperPixelsTransformer:
+class TransformerSuperPixel:
     """Super pixel transformer."""
 
     def __init__(

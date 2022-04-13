@@ -1,4 +1,7 @@
 """All configurations"""
+import os
+
+ROOT_FOLDER = "."
 
 
 DATASETS_CSV_PATH = {
@@ -22,3 +25,9 @@ DATASETS_CSV_PATH = {
 REVERSED_HISTOGRAM_JSON = "data/histo_values.json"
 
 BASE_DATA_PATH = "../../DeepL/cartoongan/"
+
+KMEANS_WEIGHTS = os.path.join(ROOT_FOLDER, "weights", "kmeans.pkl")
+PCA_WEIGHTS = os.path.join(ROOT_FOLDER, "weights", "pca.pkl")
+CARTOON_FEATURES_SAVE_PATH = os.path.join(
+    "..", "..", "DeepL", "cartoongan", "data", "cartoon_features"
+)

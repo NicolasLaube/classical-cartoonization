@@ -9,7 +9,7 @@ from src.base.base_transformer import Transformer
 from src.base.image_array import ImageArray
 
 
-class UnskewTransformer(Transformer):
+class TransformerUnskew(Transformer):
     """Unskew an image."""
 
     def __init__(self, size: Tuple[int, int] = (256, 256)):
