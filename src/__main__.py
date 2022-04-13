@@ -10,17 +10,27 @@ from src.transformers import (
     BinsQuantizationTransformer,
     ColorTransformer,
     GaussianBlurTransformer,
+    SuperPixelMode,
+    SuperPixelsTransformer,
     UnskewTransformer,
 )
 
 if __name__ == "__main__":
+
+    super_pixel_transformer = TransformerChain(
+        name="super_pixel",
+        input_name="input",
+        output_name="super_pixel",
+        transformers=[SuperPixelsTransformer(SuperPixelMode.SLIC)],
+    )
+
     combiner_cartoon = CombinerChain(
         name="cartoon",
-        input_name1="cartoon",
-        input_name2="input",
+        input_name1="input",
+        input_name2="super_pixel",
         output_name="output",
         combiner=ImageBlenderCombiner(
-            weight_image_1=0.5, weight_image_2=0.5, size=(256, 256)
+            weight_image_1=0.7, weight_image_2=0.3, size=(256, 256)
         ),
     )
 
@@ -76,7 +86,9 @@ if __name__ == "__main__":
     # , transformer_chain_contours, combiner_cartoon])
     pipeline_cartoon = PipelineTransformer(
         [
-            combiner_histogram_matcher
+            super_pixel_transformer,
+            combiner_cartoon
+            # combiner_histogram_matcher
             # combiner_cartoon
         ]  # transformer_quantized_colors, transformer_chain_contours, combiner_cartoon
     )
