@@ -12,6 +12,7 @@ from src.transformers import (
     GaussianBlurTransformer,
     SuperPixelMode,
     SuperPixelsTransformer,
+    TransformerKMeans,
     UnskewTransformer,
 )
 
@@ -82,12 +83,22 @@ if __name__ == "__main__":
         combiner=HistogramMatcherCombiner(),
     )
 
+    transformer_kmeans = TransformerChain(
+        name="transformer_kmeans",
+        input_name="input",
+        output_name="output",
+        transformers=[
+            TransformerKMeans(n_colors=25),
+        ],
+    )
+
     # pipeline_cartoon = PipelineTransformer([transformer_quantized_colors
     # , transformer_chain_contours, combiner_cartoon])
     pipeline_cartoon = PipelineTransformer(
         [
-            super_pixel_transformer,
-            combiner_cartoon
+            # super_pixel_transformer,
+            # combiner_cartoon
+            transformer_kmeans
             # combiner_histogram_matcher
             # combiner_cartoon
         ]  # transformer_quantized_colors, transformer_chain_contours, combiner_cartoon

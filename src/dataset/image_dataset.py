@@ -37,7 +37,7 @@ class Dataset:
         """Initialize the image dataset."""
         self.df = pd.read_csv(config.DATASETS_CSV_PATH[mode.value][dataset_type.value])
         if size is not None:
-            self.df = self.df.sample(size)
+            self.df = self.df.sample(size, random_state=42)
 
     def __len__(self) -> int:
         """Get the number of images in the dataset."""
