@@ -1,6 +1,6 @@
 """Color transformers."""
 from dataclasses import dataclass
-from typing import List, Tuple
+from typing import List
 
 import cv2
 import numpy as np
@@ -8,6 +8,7 @@ import numpy as np
 from src.base.base_transformer import Transformer
 from src.base.image_array import ImageArray, ImageFormat
 from src.dataset.formatter import format_image
+from src.transformers import GaussianBlurTransformer
 
 
 class HSVAffineTransformer(Transformer):
@@ -69,6 +70,7 @@ class AffineColorTransformer(Transformer):
     def __init__(self, color_transforms: List[ColorTransformParams]):
         """Initialize the affine color transformer"""
         self.color_transforms = color_transforms
+        self.blur_filter = GaussianBlurTransformer(kernel=(11, 11))
 
     def __call__(self, input_img: ImageArray) -> ImageArray:
         """Applies transform to an image"""
@@ -81,6 +83,7 @@ class AffineColorTransformer(Transformer):
             )
             weight_matrix = color_weights * (color_transform.a - 1) + color_transform.b
             mask = np.where(color_weights >= color_transform.threshold, 1, 0)
+            mask = self.blur_filter(mask.astype(np.float32))
             weight_matrix *= mask
             input_img = np.clip(
                 input_img.astype(np.float64)
