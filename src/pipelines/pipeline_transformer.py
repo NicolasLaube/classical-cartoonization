@@ -6,7 +6,7 @@ from src.pipelines.chains import Chain, CombinerChain, TransformerChain
 
 
 class PipelineTransformer:
-    """Pipeline Trasnformers"""
+    """Pipeline Transformers"""
 
     def __init__(self, actuators: List[Chain]):
         """Initialize the global combiner"""

@@ -3,3 +3,6 @@ from src.transformers.transformer_color import *
 from src.transformers.transformer_contour import *
 from src.transformers.transformer_edge import *
 from src.transformers.transformer_histogram import *
+from src.transformers.transformer_quantization import *
+from src.transformers.transformer_segmentation import *
+from src.transformers.transformer_corner import *

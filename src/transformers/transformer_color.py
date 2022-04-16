@@ -1,4 +1,5 @@
 """Color transformers."""
+from dataclasses import dataclass
 from typing import List, Tuple
 
 import cv2
@@ -38,14 +39,6 @@ class HSVAffineTransformer(Transformer):
         return cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
 
 
-class SpecificColorTransformer(Transformer):
-    """Modifines specicied colors."""
-
-    def __init__(self, color_params: List[Tuple[List[int], float, float]]):
-        """Initialize the specific color transformer"""
-        self.color_params = color_params
-
-
 class ColorTransformer(Transformer):
     """To transform an image of a certain type to another"""
 
@@ -60,13 +53,42 @@ class ColorTransformer(Transformer):
         return format_image(input_img, self.to_format)[idx]
 
 
-class BinsQuantizationTransformer(Transformer):
-    """Quantize an image to a certain number of colors using bins"""
+@dataclass
+class ColorTransformParams:
+    """Parameters for color transformation"""
 
-    def __init__(self, n_colors: int):
-        """Initialize the color quantization transformer"""
-        self.bins = 256 // n_colors
+    color: List[int]
+    threshold: float = 0
+    a: float = 1  # pylint: disable=invalid-name
+    b: float = 0  # pylint: disable=invalid-name
+
+
+class AffineColorTransformer(Transformer):
+    """Do an affine transform on the specified colors"""
+
+    def __init__(self, color_transforms: List[ColorTransformParams]):
+        """Initialize the affine color transformer"""
+        self.color_transforms = color_transforms
 
     def __call__(self, input_img: ImageArray) -> ImageArray:
         """Applies transform to an image"""
-        return input_img // self.bins * self.bins + 128 // self.bins
+        for color_transform in self.color_transforms:
+            color_weights = input_img.dot(color_transform.color) / np.array(
+                color_transform.color
+            ).dot(color_transform.color)
+            duplicated_color = np.tile(
+                color_transform.color, (input_img.shape[0], input_img.shape[1], 1)
+            )
+            weight_matrix = color_weights * (color_transform.a - 1) + color_transform.b
+            mask = np.where(color_weights >= color_transform.threshold, 1, 0)
+            weight_matrix *= mask
+            input_img = np.clip(
+                input_img.astype(np.float64)
+                + np.einsum(
+                    "kij->ijk",
+                    np.multiply(np.einsum("ijk->kij", duplicated_color), weight_matrix),
+                ),
+                0,
+                255,
+            ).astype(np.uint8)
+        return input_img
