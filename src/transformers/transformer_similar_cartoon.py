@@ -1,12 +1,13 @@
 """Transformer Similar Cartoon."""
 import os
+from src.base.base_transformer import Transformer
 
 from src.base.image_array import ImageArray
 from src.dataset.utils import read_image, show_image
 from src.models.predictor_similar_cartoons import PredictorSimilarCartoon
 
 
-class TransformerSimilarCartoon:
+class TransformerSimilarCartoon(Transformer):
     """Transformer Similar Cartoon."""
 
     def __init__(self, plot: bool = True) -> None:
@@ -14,7 +15,7 @@ class TransformerSimilarCartoon:
         self.plot = plot
 
     def __call__(self, image: ImageArray) -> ImageArray:
-        """Apply super pixels."""
+        """Looks for similar cartoon."""
         path, _ = self.similar_cartoon_predictor.get_most_similar_image_array(image)
         cartoon = read_image(
             os.path.abspath(
