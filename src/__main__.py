@@ -29,7 +29,12 @@ if __name__ == "__main__":
         name="super_pixel",
         input_name="histogram_combined",
         output_name="super_pixel",
-        transformers=[TransformerSuperPixel(SuperPixelMode.SLIC)],
+        transformers=[
+            TransformerSuperPixel(
+                SuperPixelMode.FELZENSZWALB,
+                add_rag_thresholding=True,
+            )
+        ],
     )
 
     transformer_unskew = TransformerChain(
@@ -62,13 +67,11 @@ if __name__ == "__main__":
     )
 
     combiner_blender = CombinerChain(
-        name="cartoon",
-        input_name1="input",
+        name="blender",
+        input_name1="histogram_combined",
         input_name2="super_pixel",
         output_name="output",
-        combiner=ImageBlenderCombiner(
-            weight_image_1=0.6, weight_image_2=0.4, size=(256, 256)
-        ),
+        combiner=ImageBlenderCombiner(weight_image_1=0.7, weight_image_2=0.3),
     )
 
     # combiner_quantized_colors = CombinerChain(
@@ -84,7 +87,7 @@ if __name__ == "__main__":
         input_name1="input",
         input_name2="cartoon",
         output_name="histogram_combined",
-        combiner=HistogramMatcherCombiner(),
+        combiner=HistogramMatcherCombiner(plot=False),
     )
 
     pipeline_cartoon = PipelineTransformer(
@@ -99,6 +102,6 @@ if __name__ == "__main__":
     image_dataset = Dataset(DatasetType.FLICKR, DatasetMode.TRAIN, size=20)
 
     for image in image_dataset:
-        image_cartoon = pipeline_cartoon(image)
         show_image(image)
+        image_cartoon = pipeline_cartoon(image)
         show_image(image_cartoon)

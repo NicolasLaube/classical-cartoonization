@@ -10,3 +10,8 @@ class Transformer(ABC):
     @abstractmethod
     def __call__(self, input_img: ImageArray) -> ImageArray:
         """Applies transform to an image"""
+
+    @staticmethod
+    @abstractmethod
+    def show(**kwargs):
+        """Plot trasnformation"""

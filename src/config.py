@@ -31,3 +31,4 @@ PCA_WEIGHTS = os.path.join(ROOT_FOLDER, "weights", "pca.pkl")
 CARTOON_FEATURES_SAVE_PATH = os.path.join(
     "..", "..", "DeepL", "cartoongan", "data", "cartoon_features"
 )
+CARTOONS_CLUSTER_PATH = os.path.join("data", "cartoon_features.json")
