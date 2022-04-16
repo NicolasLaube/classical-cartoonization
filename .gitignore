@@ -16,4 +16,9 @@ tmp/
 to_delete/
 runs/**
 data/**
-weights/*
+*.pkl
+*.csv
+*.log
+*.txt
+*.xml
+weights/

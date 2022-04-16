@@ -1,4 +1,7 @@
 """All configurations"""
+import os
+
+ROOT_FOLDER = "."
 
 
 DATASETS_CSV_PATH = {
@@ -22,3 +25,15 @@ DATASETS_CSV_PATH = {
 REVERSED_HISTOGRAM_JSON = "data/histo_values.json"
 
 BASE_DATA_PATH = "../../DeepL/cartoongan/"
+
+
+HAAR_CASCADE_EYE = "weights/haarcascade_eye.xml"
+HAAR_CASCADE_FACE = "weights/haarcascade_frontalface_default.xml"
+
+EYES_SAVE_PATH = "data/eyes/"
+KMEANS_WEIGHTS = os.path.join(ROOT_FOLDER, "weights", "kmeans.pkl")
+PCA_WEIGHTS = os.path.join(ROOT_FOLDER, "weights", "pca.pkl")
+CARTOON_FEATURES_SAVE_PATH = os.path.join(
+    "..", "..", "DeepL", "cartoongan", "data", "cartoon_features"
+)
+CARTOONS_CLUSTER_PATH = os.path.join("data", "cartoon_features.json")

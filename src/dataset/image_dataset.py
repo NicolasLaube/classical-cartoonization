@@ -33,11 +33,15 @@ class Dataset:
         dataset_type: DatasetType = DatasetType.FLICKR,
         mode: DatasetMode = DatasetMode.TRAIN,
         size: Optional[int] = None,
+        random_seed: Optional[int] = None,
     ) -> None:
         """Initialize the image dataset."""
         self.df = pd.read_csv(config.DATASETS_CSV_PATH[mode.value][dataset_type.value])
         if size is not None:
-            self.df = self.df.sample(size, random_state=42)
+            if random_seed is not None:
+                self.df = self.df.sample(n=size, random_state=random_seed)
+            else:
+                self.df = self.df.sample(n=size)
 
     def __len__(self) -> int:
         """Get the number of images in the dataset."""

@@ -16,8 +16,12 @@ class HistogramEqualizationTransformer(Transformer):
         """Applies transform to an image"""
         return cv2.equalizeHist(input_img)
 
+    @staticmethod
+    def show():
+        """Show"""
 
-class HistogramMatchingTransformer(Transformer):
+
+class TransformerHistogramMatching(Transformer):
     """Matches an images histogram with a given one"""
 
     def __init__(self, histogram_path: str = config.REVERSED_HISTOGRAM_JSON):
@@ -48,7 +52,6 @@ class HistogramMatchingTransformer(Transformer):
         final_img = np.zeros(hsv.shape)
         # final_img[:,:,0] = cv2.LUT(hsv[:,:,0], final_hists["hue"])
         final_img[:, :, 0] = hsv[:, :, 0]
-        print(hsv.dtype)
         final_img[:, :, 1] = cv2.LUT(hsv[:, :, 1], final_hists["saturation"])
         final_img[:, :, 2] = cv2.LUT(hsv[:, :, 2], final_hists["value"])
         return cv2.cvtColor(final_img.astype(np.uint8), cv2.COLOR_HSV2RGB)
