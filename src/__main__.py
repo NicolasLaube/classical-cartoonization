@@ -106,8 +106,8 @@ if __name__ == "__main__":
 
     image_dataset = Dataset(DatasetType.FLICKR, DatasetMode.TRAIN, size=20)
 
-    for cartoon in tqdm(cartoon_dataset, total=len(cartoon_dataset)):
-        image_cartoon = pipeline_cartoon(cartoon)
+    for image in tqdm(image_dataset, total=len(image_dataset)):
+        image_cartoon = pipeline_cartoon(image)
         # plt.imshow(image_cartoon)
         # show_image(image)
         # show_image(cartoon)
