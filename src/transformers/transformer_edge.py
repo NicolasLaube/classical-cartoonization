@@ -16,3 +16,7 @@ class TransformerCannyEdge(Transformer):
     def __call__(self, input_img: ImageArray) -> ImageArray:
         """Applies transform to an image"""
         return cv2.Canny(input_img, self.th_min, self.th_max)
+
+    @staticmethod
+    def show():
+        """Show"""

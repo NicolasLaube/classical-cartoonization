@@ -46,6 +46,10 @@ class TransformerContour(Transformer):
         image_with_mask[:, :, 1] = cv2.bitwise_not(mask)
         return image_with_mask
 
+    @staticmethod
+    def show():
+        """Show"""
+
 
 class TransformerAdaptiveThresholdContour(Transformer):
     """Draw contours thanks to adaptive threshold"""
@@ -71,3 +75,7 @@ class TransformerAdaptiveThresholdContour(Transformer):
         image_with_mask[:, :, 0] = edges
         image_with_mask[:, :, 1] = cv2.bitwise_not(edges)
         return image_with_mask
+
+    @staticmethod
+    def show():
+        """Show"""

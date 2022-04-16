@@ -19,6 +19,10 @@ class TransformerGaussianBlur(Transformer):
         """Applies transform to an image"""
         return cv2.GaussianBlur(input_img, self.kernel, self.stdev)
 
+    @staticmethod
+    def show():
+        """Show"""
+
 
 class TransformerMedianBlur(Transformer):
     """Apply median blur to transformer"""
@@ -30,6 +34,10 @@ class TransformerMedianBlur(Transformer):
     def __call__(self, input_img: ImageArray) -> ImageArray:
         """Applies transform to an image"""
         return cv2.medianBlur(input_img, self.ksize)
+
+    @staticmethod
+    def show():
+        """Show"""
 
 
 class TransformerBilateralBlur(Transformer):
@@ -48,3 +56,7 @@ class TransformerBilateralBlur(Transformer):
         return cv2.bilateralFilter(
             input_img, self.sigma_color, self.sigma_space, self.border_type
         )
+
+    @staticmethod
+    def show():
+        """Show"""

@@ -57,3 +57,7 @@ class TransformerUnskew(Transformer):
             return img_rotated  # np.median(angles)
         except:  # pylint: disable=W0702
             return image_array
+
+    @staticmethod
+    def show():
+        """Show."""

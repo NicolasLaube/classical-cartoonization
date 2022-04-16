@@ -11,24 +11,23 @@ from src.transformers import (
     TransformerBinsQuantization,
     TransformerColor,
     TransformerGaussianBlur,
-    TransformerSimilarCartoon,
     TransformerSuperPixel,
     TransformerUnskew,
 )
 
 if __name__ == "__main__":
 
-    transformer_similar_cartoon = TransformerChain(
-        name="similar_cartoon",
-        input_name="input",
-        output_name="cartoon",
-        transformers=[TransformerSimilarCartoon()],
-    )
+    # transformer_similar_cartoon = TransformerChain(
+    #     name="similar_cartoon",
+    #     input_name="input",
+    #     output_name="cartoon",
+    #     transformers=[TransformerSimilarCartoon()],
+    # )
 
     transformer_super_pixel = TransformerChain(
         name="super_pixel",
-        input_name="histogram_combined",
-        output_name="super_pixel",
+        input_name="input",
+        output_name="output",
         transformers=[
             TransformerSuperPixel(
                 SuperPixelMode.FELZENSZWALB,
@@ -86,22 +85,25 @@ if __name__ == "__main__":
         name="combiner_histogram_matcher",
         input_name1="input",
         input_name2="cartoon",
-        output_name="histogram_combined",
-        combiner=HistogramMatcherCombiner(plot=False),
+        output_name="output",
+        combiner=HistogramMatcherCombiner(plot=True, colors="rgb"),
     )
 
     pipeline_cartoon = PipelineTransformer(
         [
-            transformer_similar_cartoon,
-            combiner_histogram_matcher,
-            transformer_super_pixel,
-            combiner_blender,
+            transformer_super_pixel
+            # transformer_similar_cartoon,
+            # combiner_histogram_matcher,
+            # transformer_super_pixel,
+            # combiner_blender,
         ]
     )
 
-    image_dataset = Dataset(DatasetType.FLICKR, DatasetMode.TRAIN, size=20)
+    image_dataset = Dataset(
+        DatasetType.FLICKR, DatasetMode.TRAIN, size=20, random_seed=42
+    )
 
     for image in image_dataset:
         show_image(image)
         image_cartoon = pipeline_cartoon(image)
-        show_image(image_cartoon)
+        show_image(image_cartoon, colors="rgb")

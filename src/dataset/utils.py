@@ -17,8 +17,10 @@ def read_image(image_path: str, add_base: bool = True) -> np.ndarray:
     return image
 
 
-def show_image(image: np.ndarray) -> None:
+def show_image(image: np.ndarray, colors="bgr") -> None:
     """Show image"""
+    if colors == "hsv":
+        image = cv2.cvtColor(image, cv2.COLOR_HSV2RGB)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     cv2.imshow("image", image)
     cv2.waitKey(0)

@@ -1,6 +1,4 @@
 """Color transformers."""
-from typing import List, Tuple
-
 import cv2
 import numpy as np
 
@@ -37,13 +35,28 @@ class TransformerHSVAffine(Transformer):
         hsv[:, :, 2] = np.clip(hsv[:, :, 2] * self.v_a + self.v_b, 0, 255)
         return cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
 
+    def __call__(self, input_img: ImageArray) -> ImageArray:
+        """Applies transform to an image"""
+        return self.transform(input_img)
 
-class TransformerSpecificColor(Transformer):
-    """Modifines specicied colors."""
+    @staticmethod
+    def show():
+        """Show"""
 
-    def __init__(self, color_params: List[Tuple[List[int], float, float]]):
-        """Initialize the specific color transformer"""
-        self.color_params = color_params
+
+# class TransformerSpecificColor(Transformer):
+#     """Modifines specicied colors."""
+
+#     def __init__(self, color_params: List[Tuple[List[int], float, float]]):
+#         """Initialize the specific color transformer"""
+#         self.color_params = color_params
+
+#     def __call__(self, input_img: ImageArray) -> ImageArray:
+#         return
+
+#     @staticmethod
+#     def show():
+#         pass
 
 
 class TransformerColor(Transformer):
@@ -59,6 +72,10 @@ class TransformerColor(Transformer):
         idx = 1 if self.return_mask else 0
         return format_image(input_img, self.to_format)[idx]
 
+    @staticmethod
+    def show():
+        """Show"""
+
 
 class TransformerBinsQuantization(Transformer):
     """Quantize an image to a certain number of colors using bins"""
@@ -70,3 +87,7 @@ class TransformerBinsQuantization(Transformer):
     def __call__(self, input_img: ImageArray) -> ImageArray:
         """Applies transform to an image"""
         return input_img // self.bins * self.bins + 128 // self.bins
+
+    @staticmethod
+    def show():
+        """Show"""

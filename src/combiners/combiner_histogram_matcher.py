@@ -19,9 +19,10 @@ class HistogramMatcherCombiner(Combiner):
     conditions they were captured in
     """
 
-    def __init__(self, plot: bool = True):
+    def __init__(self, plot: bool = True, colors="rgb"):
         """Initialize the histogram matcher combiner."""
         self.plot = plot
+        self.colors = colors
 
     def __call__(
         self,
@@ -29,6 +30,10 @@ class HistogramMatcherCombiner(Combiner):
         reference_image: ImageArray,
     ) -> ImageArray:
         """Match two images."""
+        if self.colors == "hsv":
+            input_image = cv2.cvtColor(input_image, cv2.COLOR_RGB2HSV)
+            reference_image = cv2.cvtColor(reference_image, cv2.COLOR_RGB2HSV)
+
         hist_image = cv2.calcHist(
             [input_image], [0, 1, 2], None, [8, 8, 8], [0, 256, 0, 256, 0, 256]
         )
@@ -40,15 +45,22 @@ class HistogramMatcherCombiner(Combiner):
             hist_reference_image, hist_reference_image
         ).flatten()
 
-        distance = cv2.compareHist(hist_image, hist_reference_image, cv2.HISTCMP_CORREL)
-        print(distance)
-
-        matched = exposure.match_histograms(
-            input_image, reference_image, multichannel=bool(input_image.shape[-1] > 1)
+        correlation = cv2.compareHist(
+            hist_image, hist_reference_image, cv2.HISTCMP_CORREL
         )
-        if self.plot:
-            self.show(input_image, reference_image, matched)
-        return matched
+        print("Correlation: ", correlation)
+
+        if correlation >= 0.2:
+
+            matched = exposure.match_histograms(
+                input_image,
+                reference_image,
+                multichannel=bool(input_image.shape[-1] > 1),
+            )
+            if self.plot:
+                self.show(input_image, reference_image, matched)
+            return matched
+        return input_image
 
     @staticmethod
     def show(
