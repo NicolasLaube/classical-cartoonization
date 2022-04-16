@@ -13,6 +13,7 @@ from src.transformers import (
     TransformerColor,
     TransformerEyesWidener,
     TransformerGaussianBlur,
+    TransformerKMeans,
     TransformerSuperPixel,
     TransformerUnskew,
 )
@@ -105,9 +106,26 @@ if __name__ == "__main__":
         transformers=[TransformerEyesWidener()],
     )
 
+    transformer_kmeans = TransformerChain(
+        name="transformer_kmeans",
+        input_name="input",
+        output_name="output",
+        transformers=[
+            TransformerKMeans(n_colors=25),
+        ],
+    )
+
     # pipeline_cartoon = PipelineTransformer([transformer_quantized_colors
     # , transformer_chain_contours, combiner_cartoon])
-    pipeline_cartoon = PipelineTransformer([transformer_eyes_widener_cart])
+    pipeline_cartoon = PipelineTransformer(
+        [
+            # super_pixel_transformer,
+            # combiner_cartoon
+            transformer_kmeans
+            # combiner_histogram_matcher
+            # combiner_cartoon
+        ]  # transformer_quantized_colors, transformer_chain_contours, combiner_cartoon
+    )
 
     cartoon_dataset = Dataset(DatasetType.CARTOONS, DatasetMode.TRAIN, size=None)
 

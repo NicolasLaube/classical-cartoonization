@@ -91,3 +91,28 @@ class TransformerBinsQuantization(Transformer):
     @staticmethod
     def show():
         """Show"""
+
+
+class TransformerKMeans(Transformer):
+    """Kmeans trasnformer"""
+
+    def __init__(self, n_colors: int):
+        """Initialize the color quantization transformer"""
+        self.n_colors = n_colors
+
+    def __call__(self, input_img: ImageArray) -> ImageArray:
+        """Applies transform to an image"""
+        reshaped_image = np.float32(input_img.reshape((-1, 3)))
+
+        criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
+        _, label, center = cv2.kmeans(
+            reshaped_image, self.n_colors, None, criteria, 10, cv2.KMEANS_RANDOM_CENTERS
+        )
+        center = np.uint8(center)
+        results = center[label.flatten()]  # pylint: disable = E1136
+        image_kmeans_colors = results.reshape((input_img.shape))
+        return image_kmeans_colors
+
+    @staticmethod
+    def show():
+        """Show"""
