@@ -4,5 +4,6 @@ from src.transformers.transformer_contour import *
 from src.transformers.transformer_edge import *
 from src.transformers.transformer_eyes_widener import *
 from src.transformers.transformer_histogram import *
+from src.transformers.transformer_similar_cartoon import *
 from src.transformers.transformer_unskew import *
 from src.transformers.transformers_super_pixels import *

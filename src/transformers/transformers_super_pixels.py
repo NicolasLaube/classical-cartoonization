@@ -17,7 +17,7 @@ class SuperPixelMode(Enum):
     WATERSHED = "watershed"
 
 
-class SuperPixelsTransformer:
+class TransformerSuperPixel:
     """Super pixel transformer."""
 
     def __init__(
@@ -29,7 +29,21 @@ class SuperPixelsTransformer:
     def __call__(self, image: ImageArray) -> ImageArray:
         """Apply super pixels."""
         if self.super_pixel_mode == SuperPixelMode.FELZENSZWALB:
-            felzenszwalb_image = felzenszwalb(image, scale=100, sigma=0.5, min_size=50)
+            sigma = 0.5
+            min_size = 50
+            scale = 200
+
+            felzenszwalb_image = felzenszwalb(
+                image, scale=scale, sigma=sigma, min_size=min_size
+            )
+
+            # cv2.imwrite(
+            #     f"data/felz/felz_{scale}_{min_size}_{sigma}.png",
+            #     cv2.cvtColor(
+            #         label2rgb(felzenszwalb_image, image, kind="avg"), cv2.COLOR_BGR2RGB
+            #     ),
+            # )
+
             return label2rgb(
                 felzenszwalb_image,
                 image,
@@ -37,14 +51,20 @@ class SuperPixelsTransformer:
             )
 
         if self.super_pixel_mode == SuperPixelMode.SLIC:
-            slic_image = slic(image, n_segments=500, compactness=10, sigma=1)
+            num_seg = 500
+            compactness = 10
+            sigma = 10
+            slic_image = slic(
+                image, n_segments=num_seg, compactness=compactness, sigma=sigma
+            )
 
             if not self.add_rag_thresholding:
+
                 return label2rgb(slic_image, image, kind="avg")
             return self.rag_thresholding(image, slic_image)
 
         if self.super_pixel_mode == SuperPixelMode.QUICKSHIFT:
-            quickshifted_image = quickshift(image, kernel_size=3, max_dist=6, ratio=0.5)
+            quickshifted_image = quickshift(image, kernel_size=3, max_dist=6, ratio=0.7)
 
             if not self.add_rag_thresholding:
                 return label2rgb(quickshifted_image, image, kind="avg")
@@ -63,6 +83,10 @@ class SuperPixelsTransformer:
         graph = rag_mean_color(image, super_pixels)
         labels2 = cut_threshold(super_pixels, graph, 29)
         return label2rgb(labels2, image, kind="avg", bg_label=0)
+
+    @staticmethod
+    def show():
+        """Show"""
 
     # def fill_average(self, image: ImageArray, markers) -> ImageArray:
     #     """Fill the average of the super pixels."""

@@ -5,7 +5,7 @@ from src.base.base_transformer import Transformer
 from src.base.image_array import ImageArray
 
 
-class CannyEdgeTransformer(Transformer):
+class TransformerCannyEdge(Transformer):
     """Apply canny edge detection"""
 
     def __init__(self, th_min: int = 30, th_max: int = 150):
@@ -16,3 +16,7 @@ class CannyEdgeTransformer(Transformer):
     def __call__(self, input_img: ImageArray) -> ImageArray:
         """Applies transform to an image"""
         return cv2.Canny(input_img, self.th_min, self.th_max)
+
+    @staticmethod
+    def show():
+        """Show"""

@@ -10,7 +10,7 @@ from src.base.image_array import ImageArray, ImageFormat
 
 
 def format_image(
-    image: ImageArray, to_format
+    image: ImageArray, to_format: ImageFormat
 ) -> Tuple[ImageArray, Optional[NDArray[(Any, Any), np.uint8]]]:
     """To format a nD image into a mD one"""
     if to_format == ImageFormat.BLACK_AND_WHITE:

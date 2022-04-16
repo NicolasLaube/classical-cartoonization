@@ -9,7 +9,7 @@ from src.base.base_transformer import Transformer
 from src.base.image_array import ImageArray
 
 
-class UnskewTransformer(Transformer):
+class TransformerUnskew(Transformer):
     """Unskew an image."""
 
     def __init__(self, size: Tuple[int, int] = (256, 256)):
@@ -57,3 +57,7 @@ class UnskewTransformer(Transformer):
             return img_rotated  # np.median(angles)
         except:  # pylint: disable=W0702
             return image_array
+
+    @staticmethod
+    def show():
+        """Show."""
