@@ -1,8 +1,9 @@
 """Main file"""
+from tqdm import tqdm
+
 from src.base.image_array import ImageFormat
 from src.combiners import HistogramMatcherCombiner, ImageBlenderCombiner, MaskCombiner
 from src.dataset.image_dataset import Dataset, DatasetMode, DatasetType
-from src.dataset.utils import show_image
 from src.pipelines.chains import CombinerChain, TransformerChain
 from src.pipelines.pipeline_transformer import PipelineTransformer
 from src.transformers import (
@@ -12,6 +13,7 @@ from src.transformers import (
     GaussianBlurTransformer,
     SuperPixelMode,
     SuperPixelsTransformer,
+    TransformerEyesWidener,
     UnskewTransformer,
 )
 
@@ -82,24 +84,31 @@ if __name__ == "__main__":
         combiner=HistogramMatcherCombiner(),
     )
 
-    # pipeline_cartoon = PipelineTransformer([transformer_quantized_colors
-    # , transformer_chain_contours, combiner_cartoon])
-    pipeline_cartoon = PipelineTransformer(
-        [
-            super_pixel_transformer,
-            combiner_cartoon
-            # combiner_histogram_matcher
-            # combiner_cartoon
-        ]  # transformer_quantized_colors, transformer_chain_contours, combiner_cartoon
+    transformer_eyes_widener = TransformerChain(
+        name="transformer_eyes_widener",
+        input_name="input",
+        output_name="output",
+        transformers=[TransformerEyesWidener()],
     )
 
-    cartoon_dataset = Dataset(DatasetType.CARTOONS, DatasetMode.TRAIN, size=20)
+    transformer_eyes_widener_cart = TransformerChain(
+        name="transformer_eyes_widener",
+        input_name="input",
+        output_name="output",
+        transformers=[TransformerEyesWidener()],
+    )
+
+    # pipeline_cartoon = PipelineTransformer([transformer_quantized_colors
+    # , transformer_chain_contours, combiner_cartoon])
+    pipeline_cartoon = PipelineTransformer([transformer_eyes_widener_cart])
+
+    cartoon_dataset = Dataset(DatasetType.CARTOONS, DatasetMode.TRAIN, size=None)
 
     image_dataset = Dataset(DatasetType.FLICKR, DatasetMode.TRAIN, size=20)
 
-    for image, cartoon in zip(image_dataset, cartoon_dataset):
-        image_cartoon = pipeline_cartoon(image, cartoon)
+    for cartoon in tqdm(cartoon_dataset, total=len(cartoon_dataset)):
+        image_cartoon = pipeline_cartoon(cartoon)
         # plt.imshow(image_cartoon)
-        show_image(image)
-        show_image(cartoon)
-        show_image(image_cartoon)
+        # show_image(image)
+        # show_image(cartoon)
+        # show_image(image_cartoon)

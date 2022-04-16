@@ -17,8 +17,10 @@ class HistogramMatcherCombiner(Combiner):
 
     def __init__(
         self,
+        color: str = "rgb",
     ):
-        """Initialize the histogram matcher combiner."""
+        """Initialize."""
+        self.color = color
 
     def __call__(
         self,
@@ -26,6 +28,10 @@ class HistogramMatcherCombiner(Combiner):
         reference_image: ImageArray,
     ) -> ImageArray:
         """Match two images."""
+        if self.color == "hsv":
+            input_image = input_image.convert("hsv")
+            reference_image = reference_image.convert("hsv")
+
         return exposure.match_histograms(
             input_image, reference_image, multichannel=bool(input_image.shape[-1] > 1)
         )

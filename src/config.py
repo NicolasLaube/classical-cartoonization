@@ -22,3 +22,9 @@ DATASETS_CSV_PATH = {
 REVERSED_HISTOGRAM_JSON = "data/histo_values.json"
 
 BASE_DATA_PATH = "../../DeepL/cartoongan/"
+
+
+HAAR_CASCADE_EYE = "weights/haarcascade_eye.xml"
+HAAR_CASCADE_FACE = "weights/haarcascade_frontalface_default.xml"
+
+EYES_SAVE_PATH = "data/eyes/"
