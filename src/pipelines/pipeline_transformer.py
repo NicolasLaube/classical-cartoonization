@@ -1,11 +1,12 @@
 """Transformer pipeline."""
 from typing import List
 
+from src.base.base_transformer import Transformer
 from src.base.image_array import ImageArray
 from src.pipelines.chains import Chain, CombinerChain, TransformerChain
 
 
-class PipelineTransformer:
+class PipelineTransformer(Transformer):
     """Pipeline Transformers"""
 
     def __init__(self, actuators: List[Chain]):
