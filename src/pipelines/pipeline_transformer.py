@@ -1,5 +1,8 @@
 """Transformer pipeline."""
-from typing import List
+import os
+from typing import List, Optional
+
+import cv2
 
 from src.base.base_transformer import Transformer
 from src.base.image_array import ImageArray
@@ -51,7 +54,10 @@ class TransformerPipeline(Transformer):
         assert exist_output, "'output' chain value not found"
 
     def __call__(
-        self, input_img: ImageArray, input_cartoon: ImageArray = None
+        self,
+        input_img: ImageArray,
+        input_cartoon: ImageArray = None,
+        save_path: Optional[str] = None,
     ) -> ImageArray:
         """Applies transform to an image"""
         images = {"input": input_img}
@@ -67,7 +73,32 @@ class TransformerPipeline(Transformer):
                 images[actuator.output_name] = actuator.combiner(
                     images[actuator.input_name1], images[actuator.input_name2]
                 )
+
+        if save_path is not None:
+            self.__save_results(save_path, images["output"])
         return images["output"]
+
+    def __save_results(self, save_path: str, image: ImageArray):
+        """Saves all pipeline steps images"""
+        name_from_actuators = self.__get_name_from_actuators()
+
+        if not os.path.exists(name_from_actuators):
+            os.makedirs(name_from_actuators)
+
+        # save the image
+        image_in_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        cv2.imwrite(os.path.join(name_from_actuators, save_path), image_in_rgb)
+
+    def __get_name_from_actuators(self) -> str:
+        """Get the name from the actuators"""
+        name_from_actuators = ""
+        for actuator in self.actuators:
+            name_from_actuators += actuator.name + "_"
+        return os.path.join("data", name_from_actuators)
 
     def show_pipeline_steps(self):
         """Plots all pipeline steps images"""
+
+    @staticmethod
+    def show():
+        """Show"""

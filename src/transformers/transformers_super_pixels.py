@@ -38,13 +38,6 @@ class TransformerSuperPixel(Transformer):
                 image, scale=scale, sigma=sigma, min_size=min_size
             )
 
-            # cv2.imwrite(
-            #     f"data/felz/felz_{scale}_{min_size}_{sigma}.png",
-            #     cv2.cvtColor(
-            #         label2rgb(felzenszwalb_image, image, kind="avg"), cv2.COLOR_BGR2RGB
-            #     ),
-            # )
-
             return label2rgb(
                 felzenszwalb_image,
                 image,
@@ -54,7 +47,7 @@ class TransformerSuperPixel(Transformer):
         if self.super_pixel_mode == SuperPixelMode.SLIC:
             num_seg = 500
             compactness = 10
-            sigma = 10
+            sigma = 3
             slic_image = slic(
                 image, n_segments=num_seg, compactness=compactness, sigma=sigma
             )
