@@ -9,7 +9,7 @@ from src.base.base_combiner import Combiner
 from src.base.image_array import ImageArray
 
 
-class HistogramMatcherCombiner(Combiner):
+class CombinerHistogramMatcher(Combiner):
     """
     Histogram matcher combiner.
     ---

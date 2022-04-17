@@ -1,10 +1,14 @@
 """Color transformers."""
+from dataclasses import dataclass
+from typing import List
+
 import cv2
 import numpy as np
 
 from src.base.base_transformer import Transformer
 from src.base.image_array import ImageArray, ImageFormat
 from src.dataset.formatter import format_image
+from src.transformers.transformer_blur import TransformerGaussianBlur
 
 
 class TransformerHSVAffine(Transformer):
@@ -44,21 +48,6 @@ class TransformerHSVAffine(Transformer):
         """Show"""
 
 
-# class TransformerSpecificColor(Transformer):
-#     """Modifines specicied colors."""
-
-#     def __init__(self, color_params: List[Tuple[List[int], float, float]]):
-#         """Initialize the specific color transformer"""
-#         self.color_params = color_params
-
-#     def __call__(self, input_img: ImageArray) -> ImageArray:
-#         return
-
-#     @staticmethod
-#     def show():
-#         pass
-
-
 class TransformerColor(Transformer):
     """To transform an image of a certain type to another"""
 
@@ -77,41 +66,47 @@ class TransformerColor(Transformer):
         """Show"""
 
 
-class TransformerBinsQuantization(Transformer):
-    """Quantize an image to a certain number of colors using bins"""
+@dataclass
+class ColorTransformParams:
+    """Parameters for color transformation"""
 
-    def __init__(self, n_colors: int):
-        """Initialize the color quantization transformer"""
-        self.bins = 256 // n_colors
-
-    def __call__(self, input_img: ImageArray) -> ImageArray:
-        """Applies transform to an image"""
-        return input_img // self.bins * self.bins + 128 // self.bins
-
-    @staticmethod
-    def show():
-        """Show"""
+    color: List[int]
+    threshold: float = 0
+    a: float = 1  # pylint: disable=invalid-name
+    b: float = 0  # pylint: disable=invalid-name
 
 
-class TransformerKMeans(Transformer):
-    """Kmeans trasnformer"""
+class TransformerAffineColor(Transformer):
+    """Do an affine transform on the specified colors"""
 
-    def __init__(self, n_colors: int):
-        """Initialize the color quantization transformer"""
-        self.n_colors = n_colors
+    def __init__(self, color_transforms: List[ColorTransformParams]):
+        """Initialize the affine color transformer"""
+        self.color_transforms = color_transforms
+        self.blur_filter = TransformerGaussianBlur(kernel=(11, 11))
 
     def __call__(self, input_img: ImageArray) -> ImageArray:
         """Applies transform to an image"""
-        reshaped_image = np.float32(input_img.reshape((-1, 3)))
-
-        criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
-        _, label, center = cv2.kmeans(
-            reshaped_image, self.n_colors, None, criteria, 10, cv2.KMEANS_RANDOM_CENTERS
-        )
-        center = np.uint8(center)
-        results = center[label.flatten()]  # pylint: disable = E1136
-        image_kmeans_colors = results.reshape((input_img.shape))
-        return image_kmeans_colors
+        for color_transform in self.color_transforms:
+            color_weights = input_img.dot(color_transform.color) / np.array(
+                color_transform.color
+            ).dot(color_transform.color)
+            duplicated_color = np.tile(
+                color_transform.color, (input_img.shape[0], input_img.shape[1], 1)
+            )
+            weight_matrix = color_weights * (color_transform.a - 1) + color_transform.b
+            mask = np.where(color_weights >= color_transform.threshold, 1, 0)
+            mask = self.blur_filter(mask.astype(np.float32))
+            weight_matrix *= mask
+            input_img = np.clip(
+                input_img.astype(np.float64)
+                + np.einsum(
+                    "kij->ijk",
+                    np.multiply(np.einsum("ijk->kij", duplicated_color), weight_matrix),
+                ),
+                0,
+                255,
+            ).astype(np.uint8)
+        return input_img
 
     @staticmethod
     def show():

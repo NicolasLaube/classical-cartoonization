@@ -4,27 +4,27 @@ import os
 ROOT_FOLDER = "."
 
 
+BASE_DATA_PATH = "../../../Deepl/projet/cartoongan"  # "../../DeepL/cartoongan/data"
+
 DATASETS_CSV_PATH = {
     "train": {
-        "cartoons": "../../DeepL/cartoongan/data/cartoons_train.csv",
-        "landscapes": "../../DeepL/cartoongan/data/landscapes_train.csv",
-        "flickr": "../../DeepL/cartoongan/data/pictures_train.csv",
+        "cartoons": os.path.join(BASE_DATA_PATH, "data/cartoons_train.csv"),
+        "landscapes": os.path.join(BASE_DATA_PATH, "data/landscapes_train.csv"),
+        "flickr": os.path.join(BASE_DATA_PATH, "data/pictures_train.csv"),
     },
     "validation": {
-        "cartoons": "../../DeepL/cartoongan/data/cartoons_validation.csv",
-        "landscapes": "../../DeepL/cartoongan/data/landscapes_validation.csv",
-        "flickr": "../../DeepL/cartoongan/data/pictures_validation.csv",
+        "cartoons": os.path.join(BASE_DATA_PATH, "data/cartoons_validation.csv"),
+        "landscapes": os.path.join(BASE_DATA_PATH, "data/landscapes_validation.csv"),
+        "flickr": os.path.join(BASE_DATA_PATH, "data/pictures_validation.csv"),
     },
     "test": {
-        "cartoons": "../../DeepL/cartoongan/data/cartoons_test.csv",
-        "landscapes": "../../DeepL/cartoongan/data/landscapes_test.csv",
-        "flickr": "../../DeepL/cartoongan/data/pictures_test.csv",
+        "cartoons": os.path.join(BASE_DATA_PATH, "data/cartoons_test.csv"),
+        "landscapes": os.path.join(BASE_DATA_PATH, "data/landscapes_test.csv"),
+        "flickr": os.path.join(BASE_DATA_PATH, "data/pictures_test.csv"),
     },
 }
 
-REVERSED_HISTOGRAM_JSON = "data/histo_values.json"
-
-BASE_DATA_PATH = "../../DeepL/cartoongan/"
+REVERSED_CARTOON_HISTOGRAM_JSON = "data/reversed_cartoon_histogram.json"
 
 
 HAAR_CASCADE_EYE = "weights/haarcascade_eye.xml"

@@ -1,42 +1,60 @@
 """Main file"""
 from tqdm import tqdm
 
-from src.combiners import HistogramMatcherCombiner, ImageBlenderCombiner
+from src.combiners import CombinerHistogramMatcher, CombinerImageBlender
 from src.dataset.image_dataset import Dataset, DatasetMode, DatasetType
 from src.pipelines.chains import CombinerChain, TransformerChain
-from src.pipelines.pipeline_transformer import PipelineTransformer
-from src.transformers import (
+from src.pipelines.pipeline_transformer import TransformerPipeline
+from src.transformers import (  # TransformerSimilarCartoon,
+    ColorTransformParams,
     SuperPixelMode,
+    TranformerSmoothCorners,
+    TransformerAffineColor,
     TransformerEyesWidener,
-    TransformerSimilarCartoon,
+    TransformerHistogramMatching,
     TransformerSuperPixel,
 )
 
 if __name__ == "__main__":
 
-    transformer_similar_cartoon = TransformerChain(
-        name="similar_cartoon",
+    # transformer_similar_cartoon = TransformerChain(
+    #     name="similar_cartoon",
+    #     input_name="input",
+    #     output_name="cartoon",
+    #     transformers=[TransformerSimilarCartoon(plot=False)],
+    # )
+
+    transformer_color_corrected = TransformerChain(
+        name="color_correction",
         input_name="input",
-        output_name="cartoon",
-        transformers=[TransformerSimilarCartoon(plot=False)],
+        output_name="color_corrected",
+        transformers=[
+            TransformerHistogramMatching(),
+            TransformerAffineColor(
+                [
+                    ColorTransformParams(color=[250, 120, 0], a=1.2, threshold=0.8),
+                    ColorTransformParams(color=[100, 0, 230], a=1.2, threshold=0.8),
+                ]
+            ),
+        ],
     )
 
     transformer_super_pixel = TransformerChain(
         name="quick",
-        input_name="colored_combined",
+        input_name="color_corrected",
         output_name="superpixels",
         transformers=[
-            TransformerSuperPixel(SuperPixelMode.QUICKSHIFT, add_rag_thresholding=True)
+            TransformerSuperPixel(SuperPixelMode.QUICKSHIFT, add_rag_thresholding=True),
         ],
     )
 
-    combiner_histogram_matcher = CombinerChain(
-        name="combiner_histogram_matcher",
-        input_name1="input",
-        input_name2="cartoon",
-        output_name="colored_combined",
-        combiner=HistogramMatcherCombiner(plot=False, colors="rgb"),
-    )
+    # combiner_histogram_matcher = CombinerChain(
+    #     name="combiner_histogram_matcher",
+    #     input_name1="input",
+    #     input_name2="cartoon",
+    #     output_name="color_corrected",
+    #     combiner=CombinerHistogramMatcher(plot=False, colors="rgb"),
+    # )
 
     # transformer_quantized_colors = TransformerChain(
     #     name="transformer_quantized_colors",
@@ -62,10 +80,10 @@ if __name__ == "__main__":
 
     combiner_blender = CombinerChain(
         name="blender",
-        input_name1="colored_combined",
+        input_name1="color_corrected",
         input_name2="superpixels",
         output_name="combined_superpixels_colors",
-        combiner=ImageBlenderCombiner(weight_image_1=0.7, weight_image_2=0.3),
+        combiner=CombinerImageBlender(weight_image_1=0.7, weight_image_2=0.3),
     )
 
     # combiner_quantized_colors = CombinerChain(
@@ -80,7 +98,9 @@ if __name__ == "__main__":
         name="transformer_eyes_widener",
         input_name="combined_superpixels_colors",
         output_name="output",
-        transformers=[TransformerEyesWidener(plot=False)],
+        transformers=[
+            TranformerSmoothCorners(),
+        ],  # TransformerEyesWidener(plot=False)
     )
 
     # transformer_kmeans = TransformerChain(
@@ -94,10 +114,11 @@ if __name__ == "__main__":
 
     # pipeline_cartoon = PipelineTransformer([transformer_quantized_colors
     # , transformer_chain_contours, combiner_cartoon])
-    pipeline_cartoon = PipelineTransformer(
+    pipeline_cartoon = TransformerPipeline(
         [
-            transformer_similar_cartoon,
-            combiner_histogram_matcher,
+            # transformer_similar_cartoon,
+            # combiner_histogram_matcher,
+            transformer_color_corrected,
             transformer_super_pixel,
             combiner_blender,
             transformer_eyes_widener,

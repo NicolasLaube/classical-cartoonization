@@ -1,7 +1,10 @@
 """Blur transformations classes."""
-from typing import Tuple
+from typing import Literal, Tuple
 
 import cv2
+import numpy as np
+from skimage.filters.rank import median
+from skimage.morphology import ball, disk
 
 from src.base.base_transformer import Transformer
 from src.base.image_array import ImageArray
@@ -27,13 +30,20 @@ class TransformerGaussianBlur(Transformer):
 class TransformerMedianBlur(Transformer):
     """Apply median blur to transformer"""
 
-    def __init__(self, ksize: int = 5):
+    def __init__(
+        self, kernel_type: Literal["square", "circle"] = "square", kernel_size: int = 3
+    ):
         """Initialize the blur parameters"""
-        self.ksize = ksize
+        self.kernel_type = kernel_type
+        self.kernel_size = kernel_size
 
     def __call__(self, input_img: ImageArray) -> ImageArray:
         """Applies transform to an image"""
-        return cv2.medianBlur(input_img, self.ksize)
+        if self.kernel_type == "square":
+            return cv2.medianBlur(input_img, self.kernel_size)
+        if self.kernel_type == "circle":
+            return median(input_img, ball(self.kernel_size))
+        raise ValueError(f"Unknown kernel type: {self.kernel_type}")
 
     @staticmethod
     def show():
@@ -56,6 +66,28 @@ class TransformerBilateralBlur(Transformer):
         return cv2.bilateralFilter(
             input_img, self.sigma_color, self.sigma_space, self.border_type
         )
+
+    @staticmethod
+    def show():
+        """Show"""
+
+
+class TransformerDilateErode(Transformer):
+    """Delete noise by dilating then eroding"""
+
+    def __init__(
+        self, kernel_type: Literal["square", "circle"] = "square", kernel_size: int = 3
+    ):
+        """Initialize the affine transformation"""
+        if kernel_type == "square":
+            self.kernel = np.ones((kernel_size, kernel_size), np.uint8)
+        if kernel_type == "circle":
+            self.kernel = disk(kernel_size)
+
+    def __call__(self, input_img: ImageArray) -> ImageArray:
+        """Applies transform to an image"""
+        dilated = cv2.dilate(input_img, self.kernel, iterations=1)
+        return cv2.erode(dilated, self.kernel, iterations=1)
 
     @staticmethod
     def show():

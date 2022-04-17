@@ -6,7 +6,7 @@ from src.base.base_combiner import Combiner
 from src.base.image_array import ImageArray
 
 
-class MaskCombiner(Combiner):
+class CombinerMask(Combiner):
     """Combine an image with a mask"""
 
     def __init__(self, opaqueness: float = 1):

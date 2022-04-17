@@ -4,12 +4,13 @@ from typing import List, Optional
 
 import cv2
 
+from src.base.base_transformer import Transformer
 from src.base.image_array import ImageArray
 from src.pipelines.chains import Chain, CombinerChain, TransformerChain
 
 
-class PipelineTransformer:
-    """Pipeline Trasnformers"""
+class TransformerPipeline(Transformer):
+    """Pipeline Transformers"""
 
     def __init__(self, actuators: List[Chain]):
         """Initialize the global combiner"""
@@ -97,3 +98,7 @@ class PipelineTransformer:
 
     def show_pipeline_steps(self):
         """Plots all pipeline steps images"""
+
+    @staticmethod
+    def show():
+        """Show"""

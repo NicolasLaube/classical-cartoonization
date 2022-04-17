@@ -5,7 +5,7 @@ from src.base.base_combiner import Combiner
 from src.base.image_array import ImageArray
 
 
-class ImageBlenderCombiner(Combiner):
+class CombinerImageBlender(Combiner):
     """Combine an image with a mask"""
 
     def __init__(
