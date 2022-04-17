@@ -2,7 +2,7 @@
 import os
 
 import cv2
-import numpy as np
+import numpy as np  # pylint: disable=wrong-import-order
 
 from src import config
 from src.base.image_array import ImageArray
@@ -25,7 +25,9 @@ class TransformerEyesWidener:
         :return: ImageArray
         """
         image = self.detect_eyes(image_array)
-        self.show(image)
+        if self.plot:
+            self.show(image)
+        return image
 
     def detect_eyes(  # pylint: disable=too-many-locals
         self, image_array: ImageArray
