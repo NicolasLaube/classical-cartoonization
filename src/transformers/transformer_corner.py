@@ -1,19 +1,22 @@
 """Corner transformations classes."""
 from typing import Optional
-import numpy as np
+
 import cv2
+import numpy as np
 from skimage.morphology import disk
 
 from src.base.base_transformer import Transformer
 from src.base.image_array import ImageArray
-from src.transformers import (
-    RAGSegmentationTransformer,
-    DilateErodeTransformer,
-    GaussianBlurTransformer,
+from src.transformers.transformer_blur import (
+    TransformerDilateErode,
+    TransformerGaussianBlur,
 )
+from src.transformers.transformers_super_pixels import TransformerRAGSegmentation
 
 
-class SmoothCornersTranformer(Transformer):
+class TranformerSmoothCorners(
+    Transformer
+):  # pylint: disable=too-many-instance-attributes
     """Smooth angles"""
 
     def __init__(
@@ -23,10 +26,10 @@ class SmoothCornersTranformer(Transformer):
         k: float = 0.2,
         threshold: float = 1e6,
         mask_kernel_size: int = 10,
-        preprocessor_corners: Optional[Transformer] = RAGSegmentationTransformer(
+        preprocessor_corners: Optional[Transformer] = TransformerRAGSegmentation(
             n_segments=1000, compactness=20.0, threshold=20.0
         ),
-        smooth_transformer: Transformer = DilateErodeTransformer(
+        smooth_transformer: Transformer = TransformerDilateErode(
             kernel_type="circle", kernel_size=2
         ),
     ):
@@ -38,7 +41,7 @@ class SmoothCornersTranformer(Transformer):
         self.mask_kernel_size = mask_kernel_size
         self.preprocessor_corners = preprocessor_corners
         self.smooth_transformer = smooth_transformer
-        self.blur_transformer = GaussianBlurTransformer()
+        self.blur_transformer = TransformerGaussianBlur()
 
     def __call__(self, input_img: ImageArray) -> ImageArray:
         """Applies transform to an image"""
@@ -64,3 +67,7 @@ class SmoothCornersTranformer(Transformer):
         # Finally we combine the 2
         output_img = ((1 - mask) * input_img + mask * smoothed_img).astype(np.uint8)
         return output_img
+
+    @staticmethod
+    def show():
+        """Show"""

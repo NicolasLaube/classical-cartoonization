@@ -1,6 +1,8 @@
 """All configurations"""
 import os
 
+ROOT_FOLDER = "."
+
 
 BASE_DATA_PATH = "../../../Deepl/projet/cartoongan"  # "../../DeepL/cartoongan/data"
 
@@ -23,3 +25,10 @@ DATASETS_CSV_PATH = {
 }
 
 REVERSED_CARTOON_HISTOGRAM_JSON = "data/reversed_cartoon_histogram.json"
+
+KMEANS_WEIGHTS = os.path.join(ROOT_FOLDER, "weights", "kmeans.pkl")
+PCA_WEIGHTS = os.path.join(ROOT_FOLDER, "weights", "pca.pkl")
+CARTOON_FEATURES_SAVE_PATH = os.path.join(
+    "..", "..", "DeepL", "cartoongan", "data", "cartoon_features"
+)
+CARTOONS_CLUSTER_PATH = os.path.join("data", "cartoon_features.json")

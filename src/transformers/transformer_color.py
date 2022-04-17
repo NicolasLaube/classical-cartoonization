@@ -8,10 +8,10 @@ import numpy as np
 from src.base.base_transformer import Transformer
 from src.base.image_array import ImageArray, ImageFormat
 from src.dataset.formatter import format_image
-from src.transformers import GaussianBlurTransformer
+from src.transformers.transformer_blur import TransformerGaussianBlur
 
 
-class HSVAffineTransformer(Transformer):
+class TransformerHSVAffine(Transformer):
     """Affine hsv transformation"""
 
     def __init__(
@@ -39,8 +39,16 @@ class HSVAffineTransformer(Transformer):
         hsv[:, :, 2] = np.clip(hsv[:, :, 2] * self.v_a + self.v_b, 0, 255)
         return cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
 
+    def __call__(self, input_img: ImageArray) -> ImageArray:
+        """Applies transform to an image"""
+        return self.transform(input_img)
 
-class ColorTransformer(Transformer):
+    @staticmethod
+    def show():
+        """Show"""
+
+
+class TransformerColor(Transformer):
     """To transform an image of a certain type to another"""
 
     def __init__(self, to_format: ImageFormat, return_mask: bool = False):
@@ -53,6 +61,10 @@ class ColorTransformer(Transformer):
         idx = 1 if self.return_mask else 0
         return format_image(input_img, self.to_format)[idx]
 
+    @staticmethod
+    def show():
+        """Show"""
+
 
 @dataclass
 class ColorTransformParams:
@@ -64,13 +76,13 @@ class ColorTransformParams:
     b: float = 0  # pylint: disable=invalid-name
 
 
-class AffineColorTransformer(Transformer):
+class TransformerAffineColor(Transformer):
     """Do an affine transform on the specified colors"""
 
     def __init__(self, color_transforms: List[ColorTransformParams]):
         """Initialize the affine color transformer"""
         self.color_transforms = color_transforms
-        self.blur_filter = GaussianBlurTransformer(kernel=(11, 11))
+        self.blur_filter = TransformerGaussianBlur(kernel=(11, 11))
 
     def __call__(self, input_img: ImageArray) -> ImageArray:
         """Applies transform to an image"""
@@ -95,3 +107,7 @@ class AffineColorTransformer(Transformer):
                 255,
             ).astype(np.uint8)
         return input_img
+
+    @staticmethod
+    def show():
+        """Show"""

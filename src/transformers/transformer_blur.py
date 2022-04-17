@@ -1,16 +1,16 @@
 """Blur transformations classes."""
 from typing import Literal, Tuple
 
-import numpy as np
 import cv2
+import numpy as np
 from skimage.filters.rank import median
-from skimage.morphology import disk, ball
+from skimage.morphology import ball, disk
 
 from src.base.base_transformer import Transformer
 from src.base.image_array import ImageArray
 
 
-class GaussianBlurTransformer(Transformer):
+class TransformerGaussianBlur(Transformer):
     """Apply gaussian blur to transformer"""
 
     def __init__(self, kernel: Tuple[int, int] = (5, 5), stdev: int = 0):
@@ -22,8 +22,12 @@ class GaussianBlurTransformer(Transformer):
         """Applies transform to an image"""
         return cv2.GaussianBlur(input_img, self.kernel, self.stdev)
 
+    @staticmethod
+    def show():
+        """Show"""
 
-class MedianBlurTransformer(Transformer):
+
+class TransformerMedianBlur(Transformer):
     """Apply median blur to transformer"""
 
     def __init__(
@@ -39,9 +43,14 @@ class MedianBlurTransformer(Transformer):
             return cv2.medianBlur(input_img, self.kernel_size)
         if self.kernel_type == "circle":
             return median(input_img, ball(self.kernel_size))
+        raise ValueError(f"Unknown kernel type: {self.kernel_type}")
+
+    @staticmethod
+    def show():
+        """Show"""
 
 
-class BilateralBlurTransformer(Transformer):
+class TransformerBilateralBlur(Transformer):
     """Apply bilateral blur to transformer"""
 
     def __init__(
@@ -58,8 +67,12 @@ class BilateralBlurTransformer(Transformer):
             input_img, self.sigma_color, self.sigma_space, self.border_type
         )
 
+    @staticmethod
+    def show():
+        """Show"""
 
-class DilateErodeTransformer(Transformer):
+
+class TransformerDilateErode(Transformer):
     """Delete noise by dilating then eroding"""
 
     def __init__(
@@ -75,3 +88,7 @@ class DilateErodeTransformer(Transformer):
         """Applies transform to an image"""
         dilated = cv2.dilate(input_img, self.kernel, iterations=1)
         return cv2.erode(dilated, self.kernel, iterations=1)
+
+    @staticmethod
+    def show():
+        """Show"""

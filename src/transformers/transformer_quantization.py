@@ -6,7 +6,7 @@ from src.base.base_transformer import Transformer
 from src.base.image_array import ImageArray
 
 
-class KmeansQuantizationTransformer(Transformer):
+class TransformerKmeansQuantization(Transformer):
     """Quantize an image to a certain number of colors using k-means"""
 
     def __init__(self, n_colors: int):
@@ -31,8 +31,12 @@ class KmeansQuantizationTransformer(Transformer):
         result = result.reshape(input_img.shape)
         return result
 
+    @staticmethod
+    def show():
+        """Show"""
 
-class BinsQuantizationTransformer(Transformer):
+
+class TransformerBinsQuantization(Transformer):
     """Quantize an image to a certain number of colors using bins"""
 
     def __init__(self, n_colors: int):
@@ -46,8 +50,12 @@ class BinsQuantizationTransformer(Transformer):
             + 128 // self.discriminator
         )
 
+    @staticmethod
+    def show():
+        """Show"""
 
-class HSVBinsQuantization(Transformer):
+
+class TransformerHSVBinsQuantization(Transformer):
     """Quantize some hsv components using bins"""
 
     def __init__(
@@ -81,3 +89,7 @@ class HSVBinsQuantization(Transformer):
                 + 128 // self.value_discriminator
             )
         return cv2.cvtColor(hsv, cv2.COLOR_HSV2RGB)
+
+    @staticmethod
+    def show():
+        """Show"""

@@ -6,7 +6,7 @@ from src.base.image_array import ImageArray
 from src.pipelines.chains import Chain, CombinerChain, TransformerChain
 
 
-class PipelineTransformer(Transformer):
+class TransformerPipeline(Transformer):
     """Pipeline Transformers"""
 
     def __init__(self, actuators: List[Chain]):
@@ -50,9 +50,13 @@ class PipelineTransformer(Transformer):
         assert exist_input, "'input' chain value not found"
         assert exist_output, "'output' chain value not found"
 
-    def __call__(self, input_img: ImageArray) -> ImageArray:
+    def __call__(
+        self, input_img: ImageArray, input_cartoon: ImageArray = None
+    ) -> ImageArray:
         """Applies transform to an image"""
         images = {"input": input_img}
+        if input_cartoon is not None:
+            images["cartoon"] = input_cartoon
         for actuator in self.actuators:
             if isinstance(actuator, TransformerChain):
                 image = actuator.transformers[0](images[actuator.input_name])
